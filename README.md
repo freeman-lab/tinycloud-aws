@@ -17,7 +17,10 @@ var instance = aws({
   key: 'mykey'
 })
 
-instance.start(
+instance.start(function (err, data) {
+  if (err) console.log(err)
+  if (data) console.log(data)
+})
 ```
 
 ## methods
