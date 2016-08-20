@@ -33,11 +33,11 @@ Run before the instances start, can be used to do things like provision images/d
 
 #### `driver.start(cb)`
 
-Start up the node. 
+Start up the node. Idempotent.
 
 #### `driver.stop(cb)`
 
-Stop the node.
+Stop the node. Idempotent.
 
 #### `driver.desribe(cb)`
 
