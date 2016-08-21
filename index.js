@@ -1,10 +1,7 @@
-var util = require('util')
 var async = require('async')
 var events = require('events')
 var client = require('./lib/client')
 var noop = function () {}
-
-util.inherits(Driver, events.EventEmitter)
 
 function Driver (opts) {
   if (!(this instanceof Driver)) return new Driver(opts)
@@ -40,31 +37,37 @@ function Driver (opts) {
 Driver.prototype.start = function (cb) {
   if (!cb) cb = noop
   var self = this
-  self.emit('status', 'Starting instance')
 
-  // add check that it's not already running
-
-  async.waterfall([
-    function (flow) {
-      self.client.runInstances(self.spec, function (err, reserved) {
-        if (err) return flow(err)
-        flow(null, reserved)
-      })
-    },
-    function (reserved, flow) {
-      var params = {
-        Resources: [reserved.Instances[0].InstanceId],
-        Tags: [{Key: 'Name', Value: self.name}]
-      }
-      self.client.createTags(params, function (err, data) {
-        if (err) return flow(err)
-        flow(null, reserved)
-      })
-    }
-  ], function (err, reserved) {
-    if (err) return cb(err)
-    cb(null, reserved)
+  self.describe(function (err, data) {
+    if (err) cb('Could not check existing node status')
+    console.log(data)
+    if (data && data.status != 'terminated') return cb(null)
+    create()
   })
+
+  function create () {
+    async.waterfall([
+      function (flow) {
+        self.client.runInstances(self.spec, function (err, reserved) {
+          if (err) return flow(err)
+          flow(null, reserved)
+        })
+      },
+      function (reserved, flow) {
+        var params = {
+          Resources: [reserved.Instances[0].InstanceId],
+          Tags: [{Key: 'Name', Value: self.name}]
+        }
+        self.client.createTags(params, function (err, data) {
+          if (err) return flow(err)
+          flow(null, reserved)
+        })
+      }
+    ], function (err, reserved) {
+      if (err) return cb(err)
+      cb(null, reserved)
+    })
+  }
 }
 
 Driver.prototype.destroy = function (cb) {
@@ -73,7 +76,7 @@ Driver.prototype.destroy = function (cb) {
 
   self.describe(function (err, res) {
     if (err) return cb(err)
-    if (res.state == 'running' || res.state == 'pending') {
+    if (res.status == 'running' || res.status == 'pending') {
         var ids = {InstanceIds: [res.id]}
         self.client.terminateInstances(ids, function (err, data) {
         if (err) return cb(err)
@@ -94,14 +97,15 @@ Driver.prototype.describe = function (cb) {
 
   this.client.describeInstances(filt, function (err, data) {
     if (err) return cb(err)
-    if (data.Reservations[0].length == 0) return cb('no instances found')
+    if ((data.Reservations.length == 0) || 
+      (data.Reservations[0].length == 0)) return cb('No instances found')
     var instance = data.Reservations[0].Instances[0]
     var info = {
       id: instance.InstanceId,
       private: instance.PrivateIpAddress,
       public: instance.PublicIpAddress,
       dns: instance.PublicDnsName,
-      state: instance.State.Name
+      status: instance.State.Name
     }
     return cb(null, info) 
   })

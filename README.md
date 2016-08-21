@@ -12,8 +12,7 @@ var aws = require('tinycloud-aws')
 var instance = aws({
   image: 'ami-d05e75b8',
   type: 'm3.medium',
-  name: 'voltron',
-  ports: [22, 80],
+  name: 'tomato',
   key: 'mykey'
 })
 
@@ -25,28 +24,29 @@ instance.start(function (err, data) {
 
 ## methods
 
-These are methods implemented by all driver modules.
-
-#### `driver.prepare(cb)`
-
-Run before the instances start, can be used to do things like provision images/disk/networking.
+These are the same methods implemented by all driver modules.
 
 #### `driver.start(cb)`
 
-Start up the node. Idempotent.
+Start the node with the specified parameters. If the node has already been started, this will do nothing, calling the callback with `null`.
 
 #### `driver.stop(cb)`
 
-Stop the node. Idempotent.
+Stop the node. If the node has already been stopped, this will do nothing.
 
 #### `driver.desribe(cb)`
 
-Provide information about the node (host/port/uptime)
+Provide information about the node. The callback will be passed an object with the following fields:
+- `id` an ID for the node
+- `private` the private IP address of the node
+- `public` the public IP address of the node
+- `dns` the public DNS address of the node
+- `status` the state of the node `running` `pending`
 
 #### `driver.status(cb)`
 
-Get the status of the node (pending/running/stopped)
+Provide the status of the node. Returns a string `running` `pending`
 
 #### `driver.destroy(cb)`
 
-Destructively destroy the node.
+Destructively destroy the node. If the node cannot be found, this will return an error.
