@@ -36,7 +36,7 @@ Construct a driver with the provided options. The only required option is `key`,
 - `type` the type of instance, deafult `m3.medium`
 - `name` a name to tag the instance with, default random words
 - `disk` disk size, default `8gb`
-- `dry`, whether to perform a dry run, default `false`
+- `dry` whether to perform a dry run, default `false`
 - `group` a security group to use, default `tinycloud`
 - `ports` which ports to open, default `[88, 20]`
 
