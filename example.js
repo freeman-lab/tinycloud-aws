@@ -2,7 +2,7 @@ var aws = require('./index')
 
 var medium = aws({
   name: 'tomato',
-  key: 'voltron',
+  key: 'voltron'
 })
 
 var command = process.argv[2]

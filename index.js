@@ -45,11 +45,11 @@ Driver.prototype.start = function (cb) {
   var self = this
 
   self.describe(function (err, data) {
-    if (err) cb(err) 
+    if (err) cb(err)
     if (data) {
-      if (data.status == 'pending' || data.status == 'running') {
+      if (data.status === 'pending' || data.status === 'running') {
         return cb(null)
-      } else if (data.status == 'stopping' || data.status == 'stopped') {
+      } else if (data.status === 'stopping' || data.status === 'stopped') {
         var ids = {InstanceIds: [data.id]}
         self.client.startInstances(ids, function (err, data) {
           if (err) return cb(err)
@@ -118,7 +118,8 @@ Driver.prototype.stop = function (cb) {
   var self = this
 
   self.describe(function (err, res) {
-    if (res.status == 'running' || res.status == 'pending') {
+    if (err) return cb(err)
+    if (res.status === 'running' || res.status === 'pending') {
       var ids = {InstanceIds: [res.id]}
       self.client.stopInstances(ids, function (err, data) {
         if (err) return cb(err)
@@ -134,11 +135,11 @@ Driver.prototype.destroy = function (cb) {
 
   self.describe(function (err, res) {
     if (err) return cb(err)
-    if (res.status == 'running' || res.status == 'pending' || res.status == 'stopped' || res.status == 'stopping') {
-        var ids = {InstanceIds: [res.id]}
-        self.client.terminateInstances(ids, function (err, data) {
-          if (err) return cb(err)
-          self.describe(cb)
+    if (res.status === 'running' || res.status === 'pending' || res.status === 'stopped' || res.status === 'stopping') {
+      var ids = {InstanceIds: [res.id]}
+      self.client.terminateInstances(ids, function (err, data) {
+        if (err) return cb(err)
+        self.describe(cb)
       })
     }
   })
@@ -150,13 +151,12 @@ Driver.prototype.describe = function (cb) {
 
   var filt = {Filters: [
       {Name: 'tag:Name', Values: [self.name]}
-    ]
-  }
+  ]}
 
   this.client.describeInstances(filt, function (err, data) {
     if (err) return cb(err)
-    if ((data.Reservations.length == 0) || 
-      (data.Reservations[0].length == 0)) return cb(null)
+    if ((data.Reservations.length === 0) ||
+      (data.Reservations[0].length === 0)) return cb(null)
     var sorted = data.Reservations.sort(function (a, b) {
       return b.Instances[0].LaunchTime - a.Instances[0].LaunchTime
     })
@@ -169,7 +169,7 @@ Driver.prototype.describe = function (cb) {
       uptime: (Date.now() - instance.LaunchTime) / 1000,
       status: instance.State.Name
     }
-    return cb(null, info) 
+    return cb(null, info)
   })
 }
 
