@@ -48,7 +48,7 @@ Start the node with the specified options. If an existing node is found that is 
 
 Stop the node. If the node is already running, this will stop it, and call the callback with the updated node description. If the node is already `stopping` or `stopped`, this will do nothing, and call the callback with `null`.
 
-#### `driver.desribe(cb)`
+#### `driver.describe(cb)`
 
 Provide information about the node. The callback will be passed an object with the following fields
 
