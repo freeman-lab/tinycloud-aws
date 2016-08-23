@@ -2,7 +2,7 @@
 
 > cloud driver module for amazon web services
 
-A driver module that implements the driver API for [`tinycloud`](https://github.com/freeman-lab/tinycloud) on amazon web services.
+A driver module that implements the driver API for [`tinycloud`](https://github.com/freeman-lab/tinycloud) on Amazon Web Services.
 
 ## example
 
@@ -34,7 +34,7 @@ Construct a driver with the provided options. The only required option is `key`,
 
 - `image` the amazon image to use, default `ami-d05e75b8` a basic Ubuntu 14.04 image
 - `type` the type of instance, deafult `m3.medium`
-- `name` a name to tag the instance with, default random
+- `name` a name to tag the instance with, default random words
 - `disk` disk size, default `8gb`
 - `dry`, whether to perform a dry run, default `false`
 - `group` a security group to use, default `tinycloud`
@@ -42,7 +42,7 @@ Construct a driver with the provided options. The only required option is `key`,
 
 #### `driver.start(cb)`
 
-Start the node with the specified options. If an existing node is found that is `stopped`, it will restart it, and call the callback with the updated node description. If no existing node is found, one will be created, and if it is succesfully created, it will call the callback with the description. If the node has already been started, this will do nothing, and call the callback with `null`. Otherwise, any error will be returned.
+Start the node with the specified options. If an existing node is found that is `stopped` or `stopping`, it will restart it, and call the callback with the updated node description. If no existing node is found, one will be created, and if it is succesfully created, it will call the callback with the description. If the node has already been started, this will do nothing, and call the callback with `null`. Otherwise, any error will be returned.
 
 #### `driver.stop(cb)`
 
