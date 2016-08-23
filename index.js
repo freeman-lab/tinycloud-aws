@@ -1,4 +1,5 @@
 var async = require('async')
+var random = require('random-word')
 var client = require('./lib/client')
 var noop = function () {}
 
@@ -13,6 +14,7 @@ function Driver (opts) {
   opts.group = opts.group || 'tinycloud'
   opts.ports = [22, 80]
   opts.type = opts.type || 'm3.medium'
+  opts.name = opts.name || random() + '-' + random()
 
   if (!opts.key) {
     throw Error('must provide key name')

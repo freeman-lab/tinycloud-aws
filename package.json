@@ -25,6 +25,7 @@
   "homepage": "https://github.com/freeman-lab/tinycloud-aws#readme",
   "dependencies": {
     "async": "^2.0.1",
-    "aws-sdk": "^2.5.2"
+    "aws-sdk": "^2.5.2",
+    "random-word": "^1.0.2"
   }
 }

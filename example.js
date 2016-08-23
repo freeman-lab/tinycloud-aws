@@ -1,7 +1,7 @@
 var aws = require('./index')
 
 var medium = aws({
-  name: 'tomato-8',
+  name: 'tomato',
   key: 'voltron',
 })
 
